@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CarBehavior : MonoBehaviour {
 
@@ -9,8 +10,12 @@ public class CarBehavior : MonoBehaviour {
 
 	GameObject[] lights;
 
+	public GameObject GameText;
+
 	// Use this for initialization
 	void Start () {
+		GameText = GameObject.Find ("GameText");
+
 		lights = new GameObject[2];
 
 		isLocked = false;
@@ -23,13 +28,22 @@ public class CarBehavior : MonoBehaviour {
 	}
 
 	public bool checkLocked(){
-		return isLocked;
+		if (isLocked == false) {
+			GameText.GetComponent<Text> ().text = "Press [space] to turn off the car";
+			return false;
+			
+		} else {
+			return true;
+		}
+
 	}
 
 	public void lockCar(){
-		if (isLocked == false) {
+		bool isit = checkLocked ();
+		if (isit == false) {
 			isLocked = true;
 			locksound.Play ();
+			GameText.SetActive (false);
 			foreach (GameObject light in lights){
 				light.transform.GetChild (0).gameObject.SetActive (false);
 			}

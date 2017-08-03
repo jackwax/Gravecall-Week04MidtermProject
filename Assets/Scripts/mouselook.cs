@@ -12,8 +12,11 @@ public class mouselook : MonoBehaviour {
 
 	private float speed = 0.1f;
 
-	public bool isAscended= false;
-	public bool isDescended = false;
+	private ActionManager aM;
+
+	[HideInInspector] public bool movementlocked = true;
+
+	public GameObject car;
 
 	void Start ()
 	{
@@ -21,8 +24,10 @@ public class mouselook : MonoBehaviour {
 		rotY = rot.y;
 		rotX = rot.x;
 
-		isAscended = false;
-		isDescended = false;
+		aM = this.GetComponent<ActionManager> ();
+		car = GameObject.Find ("car");
+
+
 
 		this.transform.GetChild(0).position = this.transform.position;
 	}
@@ -31,14 +36,28 @@ public class mouselook : MonoBehaviour {
 		//this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 	}
 
+	void DoActions(){
+		string action = aM.ManageActions ();
+		if (action == "LockCar") {
+			car.GetComponent<CarBehavior>().lockCar ();
+		}
+		if (action == "AnswerPhone") {
+			
+		}
+	}
+
 	void Update ()
 	{
 		
 
 
-		//if (Input.GetKeyUp (KeyCode.Space)) {
-		//	transform.Translate (new Vector3 (0, speed* 10, 0));
-		//}
+		if (movementlocked == false) {
+
+			if (Input.GetKeyUp (KeyCode.Space)) {
+				DoActions ();
+				
+			}
+			
 	
 		
 		
@@ -52,19 +71,19 @@ public class mouselook : MonoBehaviour {
 
 
 			if (Input.GetKey (KeyCode.W)) {
-				transform.Translate(new Vector3 (0, 0, speed));
+				transform.Translate (new Vector3 (0, 0, speed));
 			}
 			if (Input.GetKey (KeyCode.A)) {
-				transform.Translate(new Vector3 (-speed, 0, 0));
+				transform.Translate (new Vector3 (-speed, 0, 0));
 			}
 			if (Input.GetKey (KeyCode.D)) {
-				transform.Translate(new Vector3 (speed, 0, 0));
+				transform.Translate (new Vector3 (speed, 0, 0));
 			}
 			if (Input.GetKey (KeyCode.S)) {
-				transform.Translate(new Vector3 (0, 0, -speed));
+				transform.Translate (new Vector3 (0, 0, -speed));
 			}
 			if (transform.position.y > 1.5f || transform.position.y < 1.5f) {
-				transform.position = new Vector3(transform.position.x , 1.5f, transform.position.z);
+				transform.position = new Vector3 (transform.position.x, 1.5f, transform.position.z);
 			}
 
 			float mouseX = Input.GetAxis ("Mouse X");
@@ -79,6 +98,7 @@ public class mouselook : MonoBehaviour {
 
 			Quaternion localRotation = Quaternion.Euler (rotX, rotY, 0.0f);
 			transform.rotation = localRotation;
+		}
 		}
 
 
